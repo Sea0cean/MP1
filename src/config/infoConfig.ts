@@ -7,7 +7,7 @@ export const name = 'SeaOcean'
 export const headline = '你且听这风浪，永远二十赶朝暮'
 export const introduction =
   "Coucou Les Amis! My name is Derek Hu. I'm from Hubei and an alumnus of BUPT, UChicago, and Tsinghua. I’ve been teaching Computer Science at SCLS since 2020."
-export const email = 'tong.hu@scls-sh.org'
+export const email = 'seaoceanovo@gmail.com'
 export const githubUsername = 'Sea0cean'
 
 // about page
@@ -35,7 +35,7 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'Tiktok',
     icon: 'tiktok',
-    href: 'https://www.douyin.com/user/self?from_tab_name=SeaOcean',
+    href: 'https://www.douyin.com/user/MS4wLjABAAAAvOkmk8hdEYnktobGnbquvxfIlsaXxb6Lof2qvOxPuRODGECLen0adABWaMzPl1-B',
   },
   {
     name: 'Bilibili',
@@ -48,24 +48,19 @@ export const socialLinks: Array<SocialLinkType> = [
 export const techIcons = [
   'typescript',
   'javascript',
-  'supabase',
-  'cloudflare',
   'java',
   'oracle',
   'mysql',
   'react',
   'nodedotjs',
-  'nextdotjs',
-  'prisma',
-  'postgresql',
   'nginx',
   'vercel',
   'docker',
   'git',
   'github',
-  'visualstudiocode',
   'androidstudio',
   'ios',
   'apple',
   'wechat',
+  'apachetomcat',
 ]
