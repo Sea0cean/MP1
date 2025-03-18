@@ -4,11 +4,11 @@ export * from './career'
 
 // personal info
 export const name = 'SeaOcean'
-export const headline = 'Teacher at Shanghai Soong Ching Ling School.'
+export const headline = '你且听这风浪，永远二十赶朝暮'
 export const introduction =
   "Coucou Les Amis! My name is Derek Hu. I'm from Hubei and an alumnus of BUPT, UChicago, and Tsinghua. I’ve been teaching Computer Science at SCLS since 2020."
 export const email = 'tong.hu@scls-sh.org'
-export const githubUsername = 'derekhut'
+export const githubUsername = 'Sea0cean'
 
 // about page
 export const aboutMeHeadline = 'Who Are You and Why Should I Care?'
@@ -35,12 +35,12 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'Tiktok',
     icon: 'tiktok',
-    href: 'https://www.tiktok.com/@harvard?lang=en',
+    href: 'https://www.douyin.com/user/self?from_tab_name=SeaOcean',
   },
   {
     name: 'Bilibili',
     icon: 'bilibili',
-    href: 'https://space.bilibili.com/349721082',
+    href: 'https://space.bilibili.com/522239138',
   },
 ]
 
