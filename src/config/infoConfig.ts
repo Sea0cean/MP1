@@ -5,23 +5,26 @@ export * from './career'
 // personal info
 export const name = 'SeaOcean'
 export const headline = '你且听这风浪，永远二十赶朝暮'
-export const introduction =
-  "Coucou Les Amis! My name is Derek Hu. I'm from Hubei and an alumnus of BUPT, UChicago, and Tsinghua. I’ve been teaching Computer Science at SCLS since 2020."
+export const introduction = [
+  "Coucou Les Amis! My name is SeaOcean.",
+  "I'm from Anhui and an alumnus of Southwest University.",
+  "I am now looking forward to my postgraduate life."
+]
 export const email = 'seaoceanovo@gmail.com'
 export const githubUsername = 'Sea0cean'
 
 // about page
-export const aboutMeHeadline = 'Who Are You and Why Should I Care?'
+export const aboutMeHeadline = 'About Me'
 export const aboutParagraphs = [
-  "Coucou Les Amis! My name is Derek Hu. I'm from Hubei and an alumnus of BUPT, UChicago, and Tsinghua. I’ve been teaching Computer Science at SCLS since 2020.",
-  'Currently I am working on a new course called AI Camp, an innovative course where high school students create real-world products and startups while exploring the frontiers of AI.',
-  "I started this blog to share the insights I learn every day. Most blogs focus on education in Artificial Intelligence and general computer science, while others share the life lessons I've learned.",
+  "Coucou Les Amis! My name is SeaOcean. I'm from Anhui and an alumnus of Southwest University. I am now looking forward to my postgraduate life.",
+  'Currently I am preparing for my postgraduate, hope for getting a satisfactory result',
+  "I started this blog to share the insights I learn every day. Most blogs focus on education in daily life, like artificial intelligence, general computer science, simple algorithm learning and network security, while others share the life I was in Southwest University.",
 ]
 
 // blog
 export const blogHeadLine = "What I've thinking about."
 export const blogIntro =
-  "I've written something about AI, programming and life."
+  "Here is a record of my study, which mainly includes artificial intelligence, general computer science, simple algorithm learning and network security (mainly about CTF)."
 
 // social links
 export type SocialLinkType = {
@@ -42,6 +45,21 @@ export const socialLinks: Array<SocialLinkType> = [
     icon: 'bilibili',
     href: 'https://space.bilibili.com/522239138',
   },
+  {
+    name: 'Github',
+    icon: 'github',
+    href: 'https://github.com/Sea0cean',
+  },
+  {
+    name: 'X',
+    icon: 'x',
+    href: 'https://x.com/SeaOceanOvO',
+  },
+  {
+    name: 'Xiaohongshu',
+    icon: 'xiaohongshu',
+    href: 'https://www.xiaohongshu.com/user/profile/62d4593d000000000303c5c1',
+  },
 ]
 
 // https://simpleicons.org/
@@ -49,18 +67,20 @@ export const techIcons = [
   'typescript',
   'javascript',
   'java',
-  'oracle',
+  'python',
   'mysql',
-  'react',
   'nodedotjs',
   'nginx',
-  'vercel',
   'docker',
   'git',
   'github',
-  'androidstudio',
   'ios',
   'apple',
   'wechat',
   'apachetomcat',
+  'linux',
+  'vue',
+  'css3',
+  'html5',
+  'markdown',
 ]

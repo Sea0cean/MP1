@@ -26,19 +26,19 @@ export default function Projects() {
         ))}
       </ul>
       <div className="mx-auto flex flex-col max-w-xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
-          <h2 className="flex flex-row items-center justify-start gap-2 text-xl font-semibold tracking-tight md:text-3xl opacity-80 mb-4">
-            <Calendar size={28}/>
-            Hobbies & Volunteer
-          </h2>
-          <ul
-            role="list"
-            className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3"
-          >
-            {activities.map((activity) => (
-              <ActivityCard key={activity.name} activity={activity} titleAs='h3'/>
-            ))}
-          </ul>
-        </div>
+        <h2 className="flex flex-row items-center justify-start gap-2 text-xl font-semibold tracking-tight md:text-3xl opacity-80 mb-4">
+          <Calendar size={28} />
+          Hobbies & Volunteer
+        </h2>
+        <ul
+          role="list"
+          className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3"
+        >
+          {activities.map((activity) => (
+            <ActivityCard key={activity.name} activity={activity} titleAs='h3' />
+          ))}
+        </ul>
+      </div>
     </SimpleLayout>
   )
 }

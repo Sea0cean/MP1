@@ -14,22 +14,46 @@ export type ActivityItemType = {
   link?: string
 }
 
-// Awards
+// Awards & Honors
 export const awardsHeadLine = "Awards & Honors"
 export const awardsIntro = "Recognition for academic and professional achievements."
 
 export const awards: Array<ActivityItemType> = [
   {
-    name: 'Outstanding Teacher Award',
-    description: '',
-    date: '2024',
-    location: 'SCLS, Shanghai',
+    name: 'National College Students Mathematical Competition',
+    description: 'Get first prize in the fourteenth National College Students Mathematical Competition.',
+    date: '2023-3',
+    location: 'Beibei , Chongqing',
   },
   {
-    name: 'Zhui Ying Award',
-    description: '',
-    date: '2023',
-    location: 'Qingpu, Shanghai',
+    name: 'Chongqing college students Information security competition',
+    description: 'Get first prize in the fourteenth National College Students Mathematical competition.',
+    date: '2023-3',
+    location: 'Beibei , Chongqing',
+  },
+  {
+    name: 'Merit student of Southwest University',
+    description: 'Get the Merit student of Southwest University in 2022-2023 academic year.',
+    date: '2023-12',
+    location: 'Beibei, Chongqing',
+  },
+  {
+    name: 'Outstanding volunteer of Red Cross volunteer service',
+    description: 'Get the Outstanding volunteer of Red Cross volunteer service.',
+    date: '2024-6',
+    location: 'Yubei , Chongqing',
+  },
+  {
+    name: 'Outstanding student leader of Southwest University',
+    description: 'Get the Outstanding Student Leader of Southwest University in 2023-2024 academic year.',
+    date: '2024-12',
+    location: 'Beibei, Chongqing',
+  },
+  {
+    name: 'National College Students Mathematical competition in Modeling',
+    description: 'Get provincial second prize in the National College Students Mathematical competition in Modeling.',
+    date: '2024-9',
+    location: 'Beibei, Chongqing',
   },
 ]
 
@@ -58,6 +82,13 @@ export const projects: Array<ProjectItemType> = [
   },
   {
     name: 'AI Camp Course Development',
+    description: 'Developed a comprehensive AI curriculum for high school students, incorporating real-world projects and startup concepts.',
+    link: { href: 'https://scls-cs.gitbook.io/ai-camp', label: 'View Course' },
+    tags: ['Education', 'AI']
+  },
+
+  {
+    name: 'Provincial second prize in the National College Students Mathematical Contest in Modeling',
     description: 'Developed a comprehensive AI curriculum for high school students, incorporating real-world projects and startup concepts.',
     link: { href: 'https://scls-cs.gitbook.io/ai-camp', label: 'View Course' },
     tags: ['Education', 'AI']
