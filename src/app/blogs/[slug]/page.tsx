@@ -1,5 +1,4 @@
 import { type Metadata } from 'next'
-import path from 'path'
 import { notFound } from 'next/navigation'
 
 import { getBlogBySlug } from '@/lib/blogs'
@@ -30,16 +29,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPage({ params }: Props) {
   const blog = await getBlogBySlug(params.slug)
-
+  
   if (!blog) {
     notFound()
   }
 
-  const content = await getMDXContent(`src/content/blog/${blog.slug}.mdx`)
+  const content = await getMDXContent(params.slug)
 
   return (
     <BlogLayout
-      blog={blog}
+        blog={blog}
     >
       <div className="mt-8 prose dark:prose-invert">
         {content}

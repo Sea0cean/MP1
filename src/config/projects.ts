@@ -20,15 +20,15 @@ export const awardsIntro = "Recognition for academic and professional achievemen
 
 export const awards: Array<ActivityItemType> = [
   {
-    name: 'National College Students Mathematical Competition',
-    description: 'Get first prize in the fourteenth National College Students Mathematical Competition.',
-    date: '2023-3',
+    name: 'National College Students Mathematical Contest',
+    description: 'Get first prize in the fourteenth National College Students Mathematical Contest.',
+    date: '2023-03',
     location: 'Beibei , Chongqing',
   },
   {
-    name: 'Chongqing college students Information security competition',
-    description: 'Get first prize in the fourteenth National College Students Mathematical competition.',
-    date: '2023-3',
+    name: 'Chongqing College Students Information Security Contest',
+    description: 'Get provincial second prize in the Chongqing College Students Information Security Contest.',
+    date: '2023-11',
     location: 'Beibei , Chongqing',
   },
   {
@@ -40,19 +40,25 @@ export const awards: Array<ActivityItemType> = [
   {
     name: 'Outstanding volunteer of Red Cross volunteer service',
     description: 'Get the Outstanding volunteer of Red Cross volunteer service.',
-    date: '2024-6',
+    date: '2024-06',
     location: 'Yubei , Chongqing',
+  },
+  {
+    name: 'Information Security and Countermeasures Contest',
+    description: 'Get national second prize in the Information Security and Countermeasures Contest.',
+    date: '2024-07',
+    location: 'Haidian, Beijing',
+  },
+  {
+    name: 'National College Students Mathematical Contest in Modeling',
+    description: 'Get provincial second prize in the National College Students Mathematical Contest in Modeling.',
+    date: '2024-09',
+    location: 'Beibei, Chongqing',
   },
   {
     name: 'Outstanding student leader of Southwest University',
     description: 'Get the Outstanding Student Leader of Southwest University in 2023-2024 academic year.',
     date: '2024-12',
-    location: 'Beibei, Chongqing',
-  },
-  {
-    name: 'National College Students Mathematical competition in Modeling',
-    description: 'Get provincial second prize in the National College Students Mathematical competition in Modeling.',
-    date: '2024-9',
     location: 'Beibei, Chongqing',
   },
 ]

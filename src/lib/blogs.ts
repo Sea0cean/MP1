@@ -24,14 +24,14 @@ async function importBlog(
 ): Promise<BlogType> {
   const filePath = path.join(process.cwd(), 'src/content/blog', blogFilename)
   const source = await fs.readFile(filePath, 'utf-8')
-  
+
   const { data } = matter(source)
-  
+
   // Generate slug from relative path
   const slug = blogFilename
     .replace(/\.mdx$/, '')
     .replace(/\\/g, '/') // Normalize path separators
-  
+
   // @ts-expect-error
   return {
     slug,
@@ -41,7 +41,7 @@ async function importBlog(
 
 export async function getAllBlogs() {
   // Get all mdx files recursively
-  let blogFileNames = await glob('**/*.mdx', {
+  let blogFileNames = await glob('*/*.mdx', {
     cwd: './src/content/blog',
   })
 
@@ -69,7 +69,7 @@ export async function getAllBlogs() {
 
 export async function getLatestBlogsByCategory(limit = 3) {
   const blogs = await getAllBlogs()
-  
+
   // Group blogs by category
   const categoriesMap = blogs.reduce((acc, blog) => {
     const category = blog.category || 'Uncategorized'
@@ -96,7 +96,7 @@ export async function getBlogsByCategory(category: string) {
 
 export async function getCategories(): Promise<CategoryType[]> {
   const blogs = await getAllBlogs()
-  
+
   // Group blogs by category
   const categoriesMap = blogs.reduce((acc, blog) => {
     const category = blog.category || 'Uncategorized'
@@ -120,25 +120,42 @@ export async function getBlogBySlug(slug: string): Promise<BlogType | null> {
   try {
     // 移除可能存在的 .mdx 扩展名
     const cleanSlug = slug.replace(/\.mdx$/, '')
-    
+
     // 获取所有博客
     const allBlogs = await getAllBlogs()
-    
+
     // 查找匹配的博客
     const blog = allBlogs.find(b => {
-      // 处理带子目录的slug
-      const blogSlug = b.slug.replace(/\\/g, '/')
-      const inputSlug = cleanSlug.replace(/\\/g, '/')
-      return blogSlug === inputSlug
+      // 规范化路径
+      const normalizePath = (path: string) =>
+        path.replace(/\\/g, '/')
+          .replace(/^\/|\/$/g, '') // 移除开头结尾的斜杠
+          .toLowerCase()
+
+      const blogSlug = normalizePath(b.slug)
+      const inputSlug = normalizePath(cleanSlug)
+
+      // 调试日志
+      console.log('Comparing slugs:', {
+        blogSlug,
+        inputSlug,
+        match: blogSlug === inputSlug
+      })
+
+      // 允许匹配带或不带分类前缀的slug
+      return blogSlug === inputSlug ||
+        blogSlug.endsWith(`/${inputSlug}`)
     })
-    
+
     if (blog) {
       return blog
     }
-    
+
     // 如果找不到，尝试直接加载文件
     try {
-      return await importBlog(`${cleanSlug}.mdx`)
+      const blogPath = `${cleanSlug}.mdx`
+      console.log('Attempting to load blog directly:', blogPath)
+      return await importBlog(blogPath)
     } catch (error) {
       console.error(`Failed to load blog with slug: ${slug}`, error)
       return null
