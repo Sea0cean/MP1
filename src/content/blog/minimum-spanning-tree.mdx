@@ -1,0 +1,170 @@
+---
+title: '最小生成树'
+description: '算法学习之最小生成树，主要包括朴素版Prim算法、Kruskal算法'
+date: '2024-11-08'
+categories: 'Algorithm'
+---
+
+最小生成树的问题对应的都是无向图，有向图的生成树问题一般用不到
+
+# 朴素版Prim算法
+
+可以解决城市间架设最短铁路类似问题，稠密图
+
+类似Dijkstra算法
+
+## **AcWing858.Prim算法求最小生成树**
+
+最小生成树问题里边的正负没有关系（没有环）
+
+Dijkstra算法dist表示到第一个点的距离，Prim算法表示到集合的距离
+
+```java
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510, INF = 0x3f3f3f3f;
+
+// 稠密图，邻接矩阵
+int n, m;
+int g[N][N];
+int dist[N];
+bool st[N];
+
+int prim()
+{
+    memset(dist, 0x3f, sizeof dist);
+
+    int res = 0;
+    for (int i = 0; i < n; i++)
+    {
+        int t = -1;
+        for (int j = 1; j <= n; j++)
+            if (!st[j] && (t == -1 || dist[j] < dist[t]))
+                t = j;
+
+        if (i && dist[t] == INF)
+            return INF;
+        if (i)
+            res += dist[t];
+        st[t] = true;
+        for (int j = 1; j <= n; j++)
+            dist[j] = min(dist[j], g[t][j]); // 用t更新其他点到集合的距离
+                                             // 先累加再更新，防止自环
+    }
+
+    return res;
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+
+    memset(g, 0x3f, sizeof g);
+
+    while (m--)
+    {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        g[a][b] = g[b][a] = min(g[a][b], c);
+    }
+
+    int t = prim();
+
+    if (t == INF)
+        printf("impossible");
+    else
+        printf("%d\n", t);
+
+    return 0;
+}
+
+```
+
+# 堆优化版Prim算法
+
+不讲了，用的少，基本可以用Kruskal算法代替
+
+# Kruskal算法
+
+稀疏图，简单的并查集应用
+
+## **AcWing859.Kruskal算法求最小生成树**
+
+简单的并查集应用
+
+```java
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+int const N = 200010;
+
+int n, m;
+int p[N];
+
+struct Edge
+{
+    int a, b, w;
+
+    bool operator<(const Edge &W) const // 重载小于号方便排序
+    {
+        return w < W.w;
+    }
+} edges[N];
+
+int find(int x)
+{
+    return p[x] == x ? x : (p[x] = find(p[x]));
+
+    // if (p[x] != x)
+    //     p[x] = find(p[x]);
+    // return p[x];
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+
+    for (int i = 0; i < m; i++)
+    {
+        int a, b, w;
+        scanf("%d%d%d", &a, &b, &w);
+        edges[i] = {a, b, w};
+    }
+
+    sort(edges, edges + m); // 所有边排序
+
+    // 初始化并查集
+    for (int i = 1; i <= n; i++)
+        p[i] = i;
+
+    int res = 0, cnt = 0;
+    // 从小到大枚举所有边
+    for (int i = 0; i < m; i++)
+    {
+        int a = edges[i].a, b = edges[i].b, w = edges[i].w;
+
+        a = find(a), b = find(b);
+        if (a != b) // 如果不在一个集合中
+        {
+            p[a] = b;
+            res += w;
+            cnt++;
+        }
+    }
+
+    if (cnt < n - 1) // 如果连通分量个数小于n-1，则无解
+        puts("impossible");
+    else
+        printf("%d\n", res);
+
+    return 0;
+}
+```
+
+[访问我的Notion](https://pickle-headline-168.notion.site/1388ffd937e280a0a36ef52ef55ff855?pvs=4)

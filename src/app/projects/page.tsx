@@ -17,14 +17,20 @@ export default function Projects() {
       title={projectHeadLine}
       intro={projectIntro}
     >
-      <ul
-        role="list"
-        className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 pb-10"
-      >
-        {projects.map((project) => (
-          <ProjectCard key={project.name} project={project} />
-        ))}
-      </ul>
+      <div className="mx-auto flex flex-col max-w-xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
+        <h2 className="flex flex-row items-center justify-start gap-2 text-xl font-semibold tracking-tight md:text-3xl opacity-80 mb-4">
+          <Calendar size={28} />
+          Research & Projects
+        </h2>
+        <ul
+          role="list"
+          className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 pb-10"
+        >
+          {projects.map((project) => (
+            <ProjectCard key={project.name} project={project} />
+          ))}
+        </ul>
+      </div>
       <div className="mx-auto flex flex-col max-w-xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
         <h2 className="flex flex-row items-center justify-start gap-2 text-xl font-semibold tracking-tight md:text-3xl opacity-80 mb-4">
           <Calendar size={28} />

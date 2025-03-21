@@ -29,7 +29,7 @@ function Blog({ blog }: { blog: BlogType }) {
       <Card.Eyebrow
         as="time"
         dateTime={blog.date}
-        className="mt-1 hidden md:block"
+        className="mt-8 hidden md:block"
       >
         {formatDate(blog.date)}
       </Card.Eyebrow>
@@ -39,12 +39,11 @@ function Blog({ blog }: { blog: BlogType }) {
 
 export const metadata: Metadata = {
   title: 'Blogs',
-  description:
-    blogIntro
+  description: blogIntro
 }
 
 export default async function BlogsIndex() {
-  let blogs = await getAllBlogs()
+  const { sortedCategories } = await getAllBlogs()
 
   return (
     <SimpleLayout
@@ -52,9 +51,20 @@ export default async function BlogsIndex() {
       intro={blogIntro}
     >
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-        <div className="flex max-w-3xl flex-col space-y-16">
-          {blogs.map((blog: BlogType) => (
-            <Blog key={blog.slug} blog={blog} />
+        <div className="flex max-w-2xl flex-col space-y-16">
+          {sortedCategories.map(({ category, blogs }) => (
+            <div key={category}>
+              <h2 className="text-2xl font-bold mb-4">{category}</h2>
+              {blogs.slice(0, 3).map((blog) => (
+                <Blog key={blog.slug} blog={blog} />
+              ))}
+              <a
+                href={`/blogs/categories/${category.toLowerCase()}`}
+                className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              >
+                View all {category} blogs →
+              </a>
+            </div>
           ))}
         </div>
       </div>

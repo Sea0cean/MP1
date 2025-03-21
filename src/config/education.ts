@@ -13,6 +13,13 @@ export type EducationItemType = {
   
   export const educationList: Array<EducationItemType> = [
     {
+      school: 'wating for the next stage',
+      major: 'Computer Science',
+      logo: 'college',
+      start: '2026',
+      end: 'future'
+    },
+    {
       school: 'Southwest University',
       major: 'Software Engineering',
       logo: 'college',

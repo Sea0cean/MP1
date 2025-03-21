@@ -22,7 +22,7 @@ export const aboutParagraphs = [
 ]
 
 // blog
-export const blogHeadLine = "What I've thinking about."
+export const blogHeadLine = "What I've learning about."
 export const blogIntro =
   "Here is a record of my study, which mainly includes artificial intelligence, general computer science, simple algorithm learning and network security (mainly about CTF)."
 

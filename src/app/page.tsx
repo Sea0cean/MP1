@@ -3,6 +3,7 @@ import Newsletter from '@/components/home/Newsletter'
 import Career from '@/components/home/Career'
 import Education from '@/components/home/Education'
 import SocialLinks from '@/components/home/SocialLinks'
+import { SWUEats } from '@/components/home/SWUEats'
 import { headline, introduction } from '@/config/infoConfig'
 import { BlogCard } from '@/components/home/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
@@ -12,9 +13,12 @@ import { projectHeadLine, projectIntro, projects, blogHeadLine, blogIntro, techI
 import { awards, awardsHeadLine, awardsIntro, activities, activitiesHeadLine, activitiesIntro } from '@/config/projects'
 import IconCloud from "@/components/ui/icon-cloud"
 import { Award, Briefcase, Heart } from 'lucide-react'
+import Guestbook from "@/components/home/Guestbook"
 
 export default async function Home() {
-  let blogList = (await getAllBlogs()).slice(0, 4)
+  let blogList = (await getAllBlogs()).sortedCategories
+    .flatMap(category => category.blogs)
+    .slice(0, 2)
 
   return (
     <>
@@ -25,21 +29,29 @@ export default async function Home() {
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl opacity-80">
               {headline}
             </h2>
-            <div className="mt-6 space-y-2">
-              <p className="text-xl font-medium text-foreground">
-                {introduction[0]}
-              </p>
-              <p className="text-xl font-medium text-foreground">
-                {introduction[1]}
-              </p>
-              <p className="text-xl font-medium text-foreground">
-                {introduction[2]}
-              </p>
-            </div>
+            <p className="mt-6 text-xl text-muted-foreground">
+              {introduction}
+            </p>
             <SocialLinks className='md:mt-24'/>
           </div>
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
+          </div>
+        </div>
+
+        {/* GitHub Contributions */}
+        <div className="mx-auto flex flex-col max-w-4xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
+          <div className="w-full">
+            <img
+              src="/github-contribution-snake/github-contribution-grid-snake.svg"
+              alt="GitHub Contributions"
+              className="block dark:hidden w-full"
+            />
+            <img
+              src="/github-contribution-snake/github-contribution-grid-snake-dark.svg"
+              alt="GitHub Contributions"
+              className="hidden dark:block w-full"
+            />
           </div>
         </div>
 
@@ -106,7 +118,7 @@ export default async function Home() {
             {blogIntro}
           </p>
         </div>
-        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
+        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">          
           {/* left column */}
           {/* blog */}
           <div className="flex flex-col gap-16">
@@ -120,6 +132,14 @@ export default async function Home() {
             <Career />
             <Education />
           </div>
+        </div>
+
+        {/* SWU Eats Section */}
+        <SWUEats limit={3} />
+
+        {/* Guestbook Section */}
+        <div className="mx-auto flex flex-col max-w-xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
+          <Guestbook />
         </div>
       </Container>
     </>

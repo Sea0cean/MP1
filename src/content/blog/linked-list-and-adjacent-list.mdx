@@ -1,0 +1,195 @@
+---
+title: '链表与邻接表'
+description: '算法学习之链表与邻接表，主要是树与图的存储'
+date: '2024-09-25'
+categories: 'Algorithm'
+---
+
+### 以数组模拟为主，实现方式有多种
+
+**可以用指针+结构体的方式实现**
+
+**该讲的内容是如何用数组模拟链表**
+
+# 单链表
+
+将x插入到头节点
+
+将x插入到下标为k的点后面
+
+将下标是k的点的后面的点删掉
+
+单链表可以在任意位置插入（从头遍历），但若想以O(1)的时间复杂度插入，只能是在点后插入
+
+```cpp
+// head 表示头节点的下标
+// e[i] 表示节点i的值
+// ne[i] 表示节点i的next指针是多少
+// idx 存储当前已经用到了哪个点，也可以理解为即将要把哪个点的数存入链表
+int head, e[N], ne[N], idx;
+
+// 初始化
+void init()
+{
+    head = -1;
+    idx = 0; // 当前可以从0号点开始用，此时每个点都没有被分配
+}
+
+// 将x插到头节点
+void add_to_head(int x)
+{
+    e[idx] = x; // 把x值存下来
+    ne[idx] = head; // 将新指针指向head指向的值
+    head = idx; // 让head指向新指针
+    idx ++; // 移向下一个值
+}
+
+// 将x插入到下标为k的点后面
+void add(int k, int x)
+{
+    e[idx] = x;
+    ne[idx] = ne[k];
+    ne[k] = idx;
+    idx ++;
+}
+
+// 将下标是k的点的后面的点删掉
+void remove(int k)
+{
+    ne[k] = ne[ne[k]];
+}  
+```
+
+## AcWing826.单链表
+
+```cpp
+# include <iostream>
+
+using namespace std;
+
+const int N = 100010;
+
+// head 表示头节点的下标
+// e[i] 表示节点i的值
+// ne[i] 表示节点i的next指针是多少
+// idx 存储当前已经用到了哪个点，也可以理解为即将要把哪个点的数存入链表
+int head, e[N], ne[N], idx;
+
+// 初始化
+void init()
+{
+    head = -1;
+    idx = 0; // 当前可以从0号点开始用，此时每个点都没有被分配
+}
+
+// 将x插到头节点
+void add_to_head(int x)
+{
+    e[idx] = x; // 把x值存下来
+    ne[idx] = head; // 将新指针指向head指向的值
+    head = idx; // 让head指向新指针
+    idx ++; // 移向下一个值
+}
+
+// 将x插入到下标为k的点后面
+void add(int k, int x)
+{
+    e[idx] = x;
+    ne[idx] = ne[k];
+    ne[k] = idx;
+    idx ++;
+}
+
+// 将下标是k的点的后面的点删掉
+void remove(int k)
+{
+    ne[k] = ne[ne[k]];
+}
+
+int main()
+{
+    int m;
+    cin >> m;
+    
+    init();
+    
+    while (m --)
+    {
+        int k, x;
+        char op;
+        
+        cin >> op;
+        if (op == 'H')
+        {
+            cin >> x;
+            add_to_head(x);
+        }
+        else if (op == 'D')
+        {
+            cin >> k;
+            if (!k) head = ne[head]; // k = 0是删除头节点，头节点指向其原指向节点的下一个节点
+            remove(k - 1);
+        }
+        else
+        {
+            cin >> k >> x;
+            add(k - 1, x);
+        }   
+    }
+    
+    for (int i = head; i != -1; i = ne[i]) cout << e[i] << ' ';
+    cout << endl;
+    
+    return 0;
+}
+```
+
+### 数组实现列表可以实现指针实现列表的所有事情，最主要的优势是快（动态列表new太慢了，工程用）
+
+# 双链表
+
+### 在下标为k的点的右（左）边插入x
+
+
+### 删除第k个点
+
+```cpp
+int m;
+int e[N], l[N], r[N], idx;
+
+// 初始化
+void init()
+{
+    // 0表示左端点，1表示右端点
+    r[0] = 1, l[1] = 0;
+    idx = 2;
+}
+
+// 在下标为k的点的右边插入x
+// 想实现在左边插入调用add(l[k], x)即可
+void add(int k, int x)
+{
+    e[idx] = x;
+    r[idx] = r[k];
+    l[idx] = k;
+    l[r[k]] = idx;
+    r[k] = idx; // 这步和上一步不能反过来，因为r[k]会发生变化
+}
+
+// 删除第k个点
+void remove(int k)
+{
+    r[l[k]] = r[k];
+    l[r[k]] = l[k];
+}
+```
+
+## AcWing827.双链表
+
+# 邻接表
+
+### 将每个点的所有邻边全部存下来（开了n个单链表）
+
+head[i]代表第i个点的所有邻边，用一个单链表存起来
+
+[访问我的Notion]（https://pickle-headline-168.notion.site/10c8ffd937e28036b77bfcaa5b7707b7?pvs=4）
