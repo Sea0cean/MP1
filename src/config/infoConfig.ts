@@ -7,7 +7,7 @@ export const name = 'SeaOcean'
 export const headline = '你且听这风浪，永远二十赶朝暮'
 export const introduction = [
   "Coucou Les Amis! My name is SeaOcean.",
-  "I'm from Anhui and an alumnus of Southwest University.",
+  'I\'m from Anhui and I\'m now a student of Southwest University.',
   "I am now looking forward to my postgraduate life."
 ]
 export const email = 'seaoceanovo@gmail.com'
@@ -17,7 +17,7 @@ export const githubUsername = 'Sea0cean'
 export const aboutMeHeadline = 'About Me'
 export const aboutParagraphs = [
   "Coucou Les Amis! My name is SeaOcean. I'm from Anhui and an alumnus of Southwest University. I am now looking forward to my postgraduate life.",
-  'Currently I am preparing for my postgraduate, hope for getting a satisfactory result',
+  'Currently I am preparing for my postgraduate, hope for getting a satisfactory result.',
   "I started this blog to share the insights I learn every day. Most blogs focus on education in daily life, like artificial intelligence, general computer science, simple algorithm learning and network security, while others share the life I was in Southwest University.",
 ]
 

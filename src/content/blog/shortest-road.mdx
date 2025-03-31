@@ -1,0 +1,439 @@
+---
+title: '最短路'
+description: '算法学习之最短路，主要是朴素Dijkstra算法、堆优化版的Dijkstra算法、Bellman-Ford算法、SPFA算法'
+date: '2024-11-06'
+categories: 'Algorithm'
+---
+
+## 最短路问题的知识结构
+
+单源最短路：1个点到n个点的最短路
+
+多源汇最短路：起点和终点都不确定  源点：起点  汇点：终点
+
+约定：n代表点数，m代表边数
+
+稠密图尽量用朴素Dijkstra算法，稀疏图用堆优化版的Dijkstra算法
+
+难点：建图，如何将题目抽象为最短路问题，如何抽象出点和边
+
+# 朴素Dijkstra算法
+
+## AcWing849.**Dijkstra求最短路 I**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510;
+
+// 500个点100000条边，稠密图，使用邻接矩阵存储
+int n, m;
+int g[N][N];
+int dist[N];
+bool st[N];
+
+int dijkstra()
+{
+    // 初始化所有距离为正无穷
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        int t = -1;
+        for (int j = 1; j <= n; j++)
+            if (!st[j] && (t == -1 || dist[t] > dist[j]))
+                t = j;
+
+        if (t == n)
+            break;
+
+        st[t] = true;
+
+        for (int j = 1; j <= n; j++)
+            dist[j] = min(dist[j], dist[t] + g[t][j]);
+    }
+
+    if (dist[n] == 0x3f3f3f3f)
+        return -1;
+    return dist[n];
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+
+    // 初始化
+    memset(g, 0x3f, sizeof g);
+    // 等价于
+    // for (int i = 1; i <= n; i++)
+    //     for (int j = 1; j <= n; j++)
+    //         if (i == j) g[i][j] = 0;
+    //         else g[i][j] = INF;
+
+    while (m--)
+    {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        g[a][b] = min(g[a][b], c);
+    }
+
+    int t = dijkstra();
+
+    printf("%d\n", t);
+
+    return 0;
+}
+
+```
+
+# 堆优化版的Dijkstra算法
+
+用堆在一堆数中找最小数，时间复杂度变为O(1)
+
+手写堆支持修改任意一个数，堆中会有n个数；优先队列不支持任意修改，需要插入新的数，最终会有m个数，但最终的时间复杂度数量级相同，所以一般不需要手写堆
+
+## AcWing850.Dijkstra求最短路 II
+
+# Bellman-Ford算法
+
+### Bellman-Ford算法可以用来找负环
+
+### 有负权回路存在时，最短路不一定存在
+
+### 最多不超过k条边的最短路径：只能用Bellman-Ford算法，不能用SPFA算法（不含负环）
+
+## AcWing853.有边数限制的最短路
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 510, M = 10010;
+
+int n, m, k;
+int dist[N], backup[N];
+
+struct Edge
+{
+    int a, b, w;
+} edges[M];
+
+int bellman_ford()
+{
+    memset(dist, 0x3f, sizeof dist); // 初始化距离为无穷大
+    dist[1] = 0;                     // 起点距离为 0
+
+    for (int i = 0; i < k; i++)
+    {
+        memcpy(backup, dist, sizeof dist); // 在每次迭代前需要将数组备份一份
+        // 不加可能会出现串联，不能保证限制
+        // 只用上次迭代的结果
+
+        for (int j = 0; j < m; j++)
+        {
+            int a = edges[j].a, b = edges[j].b, w = edges[j].w;
+            dist[b] = min(dist[b], backup[a] + w); // 只用上次迭代结果来更新当前距离
+        }
+    }
+
+    if (dist[n] > 0x3f3f3f3f / 2)
+        return -0x3f3f3f3f; // 尽信书则不如无书
+    return dist[n];
+}
+
+int main()
+{
+    scanf("%d%d%d", &n, &m, &k);
+
+    for (int i = 0; i < m; ++i)
+    {
+        int a, b, w;
+        scanf("%d%d%d", &a, &b, &w);
+        edges[i] = {a, b, w};
+    }
+
+    int t = bellman_ford();
+
+    if (t == -0x3f3f3f3f)
+        puts("impossible");
+    else
+        printf("%d\n", t);
+
+    return 0;
+}
+
+```
+
+# SPFA算法
+
+只要图中没有负环，就可以用
+
+Bellman-Ford算法很傻，每次迭代都要更新所有边
+
+只有dist[a]变小dist[b]才会变小，我们用宽搜做优化
+
+## AcWing851.SPFA求最短路
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 100010, M = N * 2;
+
+// 稀疏图，使用邻接表存储
+int n, m;
+int h[N], w[M], e[M], ne[M], idx; // w表示权重
+int dist[N];
+bool st[N];
+
+void add(int a, int b, int c)
+{
+    e[idx] = b;
+    w[idx] = c;
+    ne[idx] = h[a];
+    h[a] = idx++;
+}
+
+int spfa()
+{
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+
+    queue<int> q;
+    q.push(1);
+    st[1] = true; // 存储当前节点是否在队列当中，方式队列存储重复的点
+
+    while (q.size())
+    {
+        int t = q.front();
+        q.pop();
+
+        st[t] = false; // 标记当前节点已经出队，不在队列当中了
+
+        for (int i = h[t]; ~i; i = ne[i])
+        {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i])
+            {
+                dist[j] = dist[t] + w[i];
+                if (!st[j])
+                {
+
+                    q.push(j);
+                    st[j] = true; // 标记当前节点已经在队列当中了
+                }
+            }
+        }
+    }
+
+    if (dist[n] == 0x3f3f3f3f)
+        return -0x3f3f3f3f;
+    return dist[n];
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+
+    // 初始化
+    memset(h, -1, sizeof h);
+
+    while (m--)
+    {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        // 邻接表存就不需要考虑重边，算法会保证走最短路
+        add(a, b, c);
+    }
+
+    int t = spfa();
+
+    if (t == -0x3f3f3f3f)
+        puts("impossible");
+    else
+        printf("%d\n", t);
+
+    return 0;
+}
+```
+
+出题人不卡，SPFA算法可以去解决朴素和堆优化版的Dijkstra算法的问题，好用，网格状的图比较好卡
+
+## SPFA算法判断负环
+
+## AcWing851.SPFA判断负环
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 100010, M = N * 2;
+
+// 稀疏图，使用邻接表存储
+int n, m;
+int h[N], w[M], e[M], ne[M], idx; // w表示权重
+int dist[N], cnt[N];
+bool st[N];
+
+void add(int a, int b, int c)
+{
+    e[idx] = b;
+    w[idx] = c;
+    ne[idx] = h[a];
+    h[a] = idx++;
+}
+
+int spfa()
+{
+    // 无需初始化
+    // memset(dist, 0x3f, sizeof dist);
+    // dist[1] = 0;
+
+    queue<int> q;
+
+    // 把所有点放在SPFA中
+    for (int i = 1; i <= n; i++)
+    {
+        st[i] = true;
+        q.push(i);
+    }
+
+    while (q.size())
+    {
+        int t = q.front();
+        q.pop();
+
+        st[t] = false; // 标记当前节点已经出队，不在队列当中了
+
+        for (int i = h[t]; ~i; i = ne[i])
+        {
+            int j = e[i];
+            if (dist[j] > dist[t] + w[i])
+            {
+                dist[j] = dist[t] + w[i];
+                cnt[j] = cnt[t] + 1;
+
+                if (cnt[j] >= n)
+                    return true;
+                if (!st[j])
+                {
+
+                    q.push(j);
+                    st[j] = true; // 标记当前节点已经在队列当中了
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+
+    // 初始化
+    memset(h, -1, sizeof h);
+
+    while (m--)
+    {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        // 邻接表存就不需要考虑重边，算法会保证走最短路
+        add(a, b, c);
+    }
+
+    if (spfa())
+        puts("Yes");
+    else
+        puts("No");
+
+    return 0;
+}
+```
+
+# Floyd算法
+
+d[k, i, j]：只经过1到k这些中间点，从点i到点j之间的最小距离
+
+## AcWing854**Floyd求最短路**
+
+有重边的取较小权值的，自环的直接删去
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 210, INF = 1e9;
+
+int n, m, Q;
+int d[N][N];
+
+void floyd()
+{
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= n; j++)
+                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+}
+
+int main()
+{
+    scanf("%d%d%d", &n, &m, &Q);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            if (i == j)
+                d[i][j] = 0; // 自环的权值为 0
+            else
+                d[i][j] = INF;
+
+    while (m--)
+    {
+        int a, b, w;
+        scanf("%d%d%d", &a, &b, &w);
+        d[a][b] = min(d[a][b], w); // 若有多条边则保留权值最小的边
+    }
+
+    floyd();
+
+    while (Q--)
+    {
+        int a, b;
+        scanf("%d%d", &a, &b);
+
+        int t = d[a][b];
+        if (t > INF / 2)
+            puts("impossible");
+        else
+            printf("%d\n", t);
+    }
+
+    return 0;
+}
+```
+
+[访问我的Notion](https://pickle-headline-168.notion.site/1368ffd937e2800d9147dd7169063f5d?pvs=4)

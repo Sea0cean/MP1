@@ -38,12 +38,6 @@ export const awards: Array<ActivityItemType> = [
     location: 'Beibei, Chongqing',
   },
   {
-    name: 'Outstanding volunteer of Red Cross volunteer service',
-    description: 'Get the Outstanding volunteer of Red Cross volunteer service.',
-    date: '2024-06',
-    location: 'Yubei , Chongqing',
-  },
-  {
     name: 'Information Security and Countermeasures Contest',
     description: 'Get national second prize in the Information Security and Countermeasures Contest.',
     date: '2024-07',
@@ -81,6 +75,13 @@ export const activitiesHeadLine = "Hobbies & Volunteer"
 export const activitiesIntro = "Personal interests and community contributions."
 
 export const activities: Array<ActivityItemType> = [
+  {
+    name: 'Outstanding volunteer of Red Cross volunteer service',
+    description: 
+      'Get the Outstanding volunteer of Red Cross volunteer service.',
+    date: '2024-06',
+    location: 'Chongqing',
+  },
   {
     name: 'Volunteer Activity',
     description:

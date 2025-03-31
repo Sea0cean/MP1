@@ -29,9 +29,10 @@ export default async function Home() {
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl opacity-80">
               {headline}
             </h2>
-            <p className="mt-6 text-xl text-muted-foreground">
-              {introduction}
-            </p>
+            <p 
+              className="mt-6 text-xl text-muted-foreground"
+              dangerouslySetInnerHTML={{__html: introduction.join('<br/>')}}
+            />
             <SocialLinks className='md:mt-24'/>
           </div>
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">

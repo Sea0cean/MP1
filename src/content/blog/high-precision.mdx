@@ -1,0 +1,277 @@
+---
+title: '高精度'
+description: '算法学习之高精度，主要是高精度的加减乘除'
+date: '2024-09-12'
+categories: 'Algorithm'
+---
+
+C++的sort不是简单的快速排序，是快排和插排的组合
+
+快排的模板考试时基本不会用到，面试的时候经常用
+
+高精度只有C++需要（没有大整数类）
+
+高精度在面试中考的不多，笔试中偶尔出现
+
+### 一般来说高精度考四种
+
+1. 大整数+大整数
+2. 大整数-大整数
+3. 大整数*小整数
+4. 大整数/小整数
+
+## 大整数存储
+
+对于要用一个数组存一个大数，第一位存个位会比较好
+
+理由：可能会进位，在数组末尾补上一个数是最容易的
+
+浮点数不讲，基本用不上
+
+## 高精度加法
+
+本质是模拟人工加法的过程
+
+一般适合用vector来表示大整数，自带size变量，不需要额外开变量
+
+```cpp
+# include <iostream>
+# include <vector>
+
+using namespace std;
+
+const int N = 1e6 + 10; // 加10防止出现边界问题
+
+// C = A + B
+vector<int> add(vector<int> &A, vector<int> &B) // 加引用是为了提高效率，否则会把整个数组copy一遍
+{
+    vector<int> C;
+    
+    int t = 0; // 上一位的进位
+    for (int i = 0; i < A.size() || i < B.size(); i ++)
+    {
+        if (i < A.size()) t += A[i];
+        if (i < B.size()) t += B[i];
+        C.push_back(t % 10);
+        t /= 10;
+    }
+    
+    if (t) C.push_back(1);
+    return C;
+}
+
+int main()
+{
+    string a, b; // 太长了，用字符串读
+    vector<int> A, B; // 转换成大数组
+    
+    cin >> a >> b; // a = "123456"
+    for (int i = a.size() - 1; i >= 0; i --) A.push_back(a[i] - '0'); // A = [6, 5, 4, 3, 2, 1]
+																																	    // a[i]是字符的形式，a[i] - '0'是ASCII码的问题
+    for (int i = b.size() - 1; i >= 0; i --) B.push_back(b[i] - '0');
+    
+    auto C = add(A, B); // 编译器自行推断变量类型 等价vector<int> C = add(A, B);
+    
+    for (int i = C.size() - 1; i >= 0; i --) printf("%d", C[i]);
+    return 0;
+}
+```
+
+## 高精度减法
+
+高精度存储的方式是一致的
+
+如果存在负数的情况，则需要改变输入输出
+
+一定可以转化为绝对值的相加减，即一定可以利用模板
+
+```cpp
+# include <iostream>
+# include <vector>
+
+using namespace std;
+
+// 判断A是否大于等于B
+bool cmp(vector<int> &A, vector<int> &B)
+{
+    // 首先判断位数
+    if (A.size() != B.size()) return A.size() > B.size();
+    for (int i = A.size() - 1; i >= 0; i --)
+        if (A[i] != B[i])
+            return A[i] > B[i];
+    return true; // 条件都不满足时则相等
+}
+
+// // C = A - B
+// vector<int> sub(vector<int> &A, vector<int> &B) // 加引用是为了提高效率，否则会把整个数组copy一遍
+// {
+//     vector<int> C;
+//     for (int i = 0, t = 0; i < A.size(); i ++ )
+//     {
+//         t = A[i];  // 初始化 t 为 A[i]
+//         if (i < B.size()) t -= B[i];
+//         C.push_back((t + 10) % 10); // 保证 t >= 0 时为 t; t < 0 时为 t + 10
+//         if (t < 0) t = 1; // 借位
+//         else t = 0;
+//     }
+    
+//     // 去掉前导0：高位前面的0 
+//     while (C.size() > 1 && C.back() == 0) C.pop_back();
+    
+//     return C;
+// }
+
+vector<int> sub(vector<int> &A, vector<int> &B) // 加引用是为了提高效率，否则会把整个数组copy一遍
+{
+    vector<int> C;
+    int t = 0;  // t 用于记录借位
+    for (int i = 0; i < A.size(); i ++ )
+    {
+        t = A[i] - t;  // 减去借位
+        if (i < B.size()) t -= B[i];
+        
+        if (t < 0) // 需要借位
+        {
+            C.push_back(t + 10);  // 补上10，表示借位后的结果
+            t = 1;  // 设置借位给下一位
+        }
+        else
+        {
+            C.push_back(t);  // 无需借位，直接保存当前位的结果
+            t = 0;  // 无借位
+        }
+    }
+    
+    // 去掉前导0
+    while (C.size() > 1 && C.back() == 0) C.pop_back();
+    
+    return C;
+}
+
+int main()
+{
+    string a, b; // 太长了，用字符串读
+    vector<int> A, B; // 转换成大数组
+    
+    cin >> a >> b; // a = "123456"
+    for (int i = a.size() - 1; i >= 0; i --) A.push_back(a[i] - '0'); // A = [6, 5, 4, 3, 2, 1]
+																																	    // a[i]是字符的形式，a[i] - '0'是ASCII码的问题
+    for (int i = b.size() - 1; i >= 0; i --) B.push_back(b[i] - '0');
+    
+    // 判断A是否大于等于B
+    if (cmp(A, B))
+    {
+        auto C = sub(A, B);
+        for (int i = C.size() - 1; i >= 0; i --) printf("%d", C[i]);
+    }
+    else
+    {
+        auto C = sub(B, A);
+        
+        printf("-");
+        for (int i = C.size() - 1; i >= 0; i --) printf("%d", C[i]);
+    }
+    
+    return 0;
+}
+```
+
+## 高精度乘法
+
+```cpp
+# include <iostream>
+# include <vector>
+
+using namespace std;
+
+vector<int> mul(vector<int>A, int b)
+{
+    vector<int> C;
+    int t = 0; // 第0位的进位是0
+    for (int i = 0; i < A.size() || t; i ++)
+    {
+        if (i < A.size()) t += A[i] * b;
+        C.push_back(t % 10);
+        t /= 10; // 往前移动一位，整除10就是进位
+					       // 下一位的数放在前一位的权重就会少10
+    }
+    // 去掉前导0
+    while (C.size() > 1 && C.back() == 0) C.pop_back();
+    
+    return C;
+}
+
+int main()
+{
+    string a;
+    int b;
+    
+    cin >> a >> b;
+    
+    vector<int> A;
+    // 从高位开始转化
+    for (int i = a.size() - 1; i >= 0; i --) A.push_back(a[i] - '0');
+    
+    auto C = mul(A, b);
+    
+    for (int i = C.size() - 1; i >= 0; i --) printf("%d", C[i]);
+    
+    return 0;
+}
+```
+
+## 高精度除法
+
+高精度除以低精度
+
+为了统一，虽然对于除法逻辑正着存更好，但为了统一运算仍倒着存
+
+```cpp
+# include <iostream>
+# include <vector>
+# include <algorithm>
+
+using namespace std;
+
+// A / B，商是C，余数是r
+vector<int> div(vector<int> &A, int &b, int &r) // r是引用
+{
+    vector<int> C; // 商
+    r = 0;
+    for (int i = A.size() - 1; i >= 0; i --) // 从最高位开始看
+    {
+        r = r * 10 + A[i]; // 相当于除法竖式中的拉下余数
+        C.push_back(r / b);
+        r %= b;
+    }
+    
+    reverse(C.begin(), C.end()); // 存的时候最开始是push的C的最高位，和前面定义的大整数乘法是相反的
+    
+    // 去掉前导0
+    while (C.size() > 1 && C.back() == 0) C.pop_back();
+    
+    return C;
+}
+
+int main()
+{
+    string a;
+    int b;
+    
+    cin >> a >> b;
+    
+    vector<int> A;
+    // 从高位开始转化
+    for (int i = a.size() - 1; i >= 0; i --) A.push_back(a[i] - '0');
+    
+    int r;
+    auto C = div(A, b, r);
+    
+    for (int i = C.size() - 1; i >= 0; i --) printf("%d", C[i]);
+    cout << endl << r << endl;
+    
+    return 0;
+}
+```
+
+[访问我的Notion](https://pickle-headline-168.notion.site/3442d427b8114ef19d37712e4ecb409e?pvs=4)

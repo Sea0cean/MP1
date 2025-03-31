@@ -104,7 +104,7 @@ const foods = [
     store: '李园小炒',
     time: '2024-09-20',
     review: '经济实惠，和搭子们在中图学习完后的好去处',
-    rating: 1
+    rating: 3
   },
   {
     image: '/images/food/maogelaoyatang.jpg',

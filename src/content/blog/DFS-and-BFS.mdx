@@ -1,0 +1,264 @@
+---
+title: 'DFS和BFS'
+description: '算法学习之DFS和BFS，主要是深度优先搜索和宽度优先搜索'
+date: '2024-11-04'
+categories: 'Algorithm'
+---
+
+## DFS（深度优先搜索）
+
+## BFS（宽度优先搜索）
+
+## 对比
+
+# DFS
+
+每个DFS都对应一条搜索树
+
+## 回溯
+
+## AcWing842.排列数字
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int N = 10;
+
+int n;
+int path[N];
+bool st[N]; // 为真时表示该节点被访问过
+
+void dfs(int u)
+{
+    if (u == n)
+    {
+        for (int i = 0; i < n; i++)
+            printf("%d ", path[i]);
+        puts("");
+        return;
+    }
+
+    for (int i = 1; i <= n; i++)
+    {
+        if (!st[i])
+        {
+            path[u] = i;
+            st[i] = true;
+            dfs(u + 1);
+            //path[u] = 0; // 回溯时恢复现场，逻辑上需要使用，代码编写时不需要
+            st[i] = false;
+        }
+    }
+}
+
+int main()
+{
+    cin >> n;
+
+    dfs(0);
+
+    return 0;
+}
+
+```
+
+## 剪枝
+
+当我们在行进过程中遇见冲突时，我们就可以不用进行下去了，直接回溯，就像是树枝被剪去了
+
+## AcWing843.n-皇后问题
+
+全排列的做法是完全OK的，但我门也可以采用用剪枝的方法
+
+```cpp
+**// 第一种搜索顺序 按行枚举
+#include <iostream>
+
+using namespace std;
+
+const int N = 10;
+
+int n;
+int g[N][N];
+bool col[N], dg[2 * N], udg[2 * N]; // 列，对角线，反对角线
+
+void dfs(int u)
+{
+    if (u == n)
+    {
+        for (int i = 0; i < n; i++)
+            // cout << g[i] << endl;
+            puts(g[i]);
+        puts("");
+        return;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        if (!col[i] && !dg[u + i] && !udg[n - u + i])
+        {
+            g[u][i] = 'Q';
+            col[i] = dg[u + i] = udg[n - u + i] = true;
+            dfs(u + 1);
+            col[i] = dg[u + i] = udg[n - u + i] = false;
+            g[u][i] = '.';
+        }
+    }
+}
+
+int main()
+{
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            g[i][j] = '.';
+
+    dfs(0);
+
+    return 0;
+}**
+
+```
+
+# BFS
+
+## AcWing844.走迷宫
+
+dp问题和最短路问题其实是互通的，dp问题是一类特殊的最短路问题
+
+### 深搜一般没有常用框架，宽搜有
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 110;
+
+int n, m;
+int g[N][N]; // 存储地图
+int d[N][N]; // 存储到起点的距离
+PII q[N * N];
+
+int bfs()
+{
+    // 手写队列
+    int hh = 0, tt = 0;
+    q[0] = {0, 0};
+
+    memset(d, -1, sizeof d);
+    d[0][0] = 0;
+
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+    while (hh <= tt)
+    {
+        auto t = q[hh++];
+
+        for (int i = 0; i < 4; i++)
+        {
+            int x = t.first + dx[i], y = t.second + dy[i];
+            if (x >= 0 && x <= n && y >= 0 && y <= m && g[x][y] == 1 && d[x][y] == -1)
+            {
+                d[x][y] = d[t.first][t.second] + 1;
+                q[++tt] = {x, y};
+            }
+        }
+    }
+
+    return d[n - 1][m - 1];
+}
+
+int main()
+{
+    cin >> n >> m;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            cin >> g[i][j];
+
+    cout << bfs() << endl;
+
+    return 0;
+}
+```
+
+如何输出路径：记录哪个点是由哪个点扩展出来的
+
+```cpp
+// 记录路径
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+typedef pair<int, int> PII;
+
+const int N = 110;
+
+int n, m;
+int g[N][N]; // 存储地图
+int d[N][N]; // 存储到起点的距离
+int pre[N][N]; // 存储路径
+PII q[N * N];
+
+int bfs()
+{
+    // 手写队列
+    int hh = 0, tt = 0;
+    q[0] = {0, 0};
+
+    memset(d, -1, sizeof d);
+    d[0][0] = 0;
+
+    int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+    while (hh <= tt)
+    {
+        auto t = q[hh++];
+
+        for (int i = 0; i < 4; i++)
+        {
+            int x = t.first + dx[i], y = t.second + dy[i];
+            if (x >= 0 && x <= n && y >= 0 && y <= m && g[x][y] == 1 && d[x][y] == -1)
+            {
+                d[x][y] = d[t.first][t.second] + 1;
+                pre[x][y] = t;
+                q[++tt] = {x, y};
+            }
+        }
+    }
+
+    int x = n - 1, y = m - 1;
+    while (x || y)
+    {
+        cout << x + 1 << " " << y + 1 << endl;
+        auto t = pre[x][y];
+        x = t.first, y = t.second;
+    }
+
+    return d[n - 1][m - 1];
+}
+
+int main()
+{
+    cin >> n >> m;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            cin >> g[i][j];
+
+    cout << bfs() << endl;
+
+    return 0;
+}
+```
+
+[访问我的Notion](https://pickle-headline-168.notion.site/DFS-BFS-1348ffd937e280399cd4fea5185d216d?pvs=4)

@@ -1,0 +1,952 @@
+---
+title: '动态规划'
+description: '算法学习之动态规划'
+date: '2024-11-14'
+categories: 'Algorithm'
+---
+
+### 背包问题
+
+# 背包问题
+
+# 闫氏DP法
+
+f(i, j)表示的所有选法表示成两大类（划分成若干更小的子集）
+不含i：从1~i中选，且不含i，总体积小于j ⇒  1~i-1,j  f(i-1,j)
+含i：先把每种选法中的第i个物品都去掉，此时不影响我们的最大值是谁，变为从1~i-1中选，最大值为1~i-1, j-vi
+
+# 01背包问题
+
+## AcWing2.01背包问题
+
+## 二维动态规划（朴素动态规划）
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+int v[N], w[N];
+int f[N][N];
+
+int main()
+{
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; i ++ ) cin >> v[i] >> w[i];
+
+    // 不用进行初始化
+    for (int i = 1; i <= n; i ++ )
+        for (int j = 0; j <= m; j ++ )
+        {
+            f[i][j] = f[i - 1][j];
+            if (j >= v[i]) f[i][j] = max(f[i][j], f[i - 1][j - v[i]] + w[i]);
+        }
+
+    cout << f[n][m] << endl;
+
+    return 0;
+}
+
+```
+
+## 改进：一维动态规划
+
+我们发现，f[i]层只用到了f[i - 1]层，提示我们可以用滚动数组来做
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+int v[N], w[N];
+int f[N];
+
+int main()
+{
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; i ++ ) cin >> v[i] >> w[i];
+
+    // 不用进行初始化
+    for (int i = 1; i <= n; i ++ )
+        for (int j = m; j >= v[i]; j -- )
+            f[j] = max(f[j], f[j - v[i]] + w[i]);
+
+    cout << f[m] << endl;
+
+    return 0;
+}
+
+```
+
+# 完全背包问题
+
+朴素做法
+
+## AcWing3.完全背包问题
+
+### 直接实现朴素做法：
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+int v[N], w[N];
+int f[N][N];
+
+int main()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        cin >> v[i] >> w[i];
+
+    // 状态转移方程
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j <= m; j++)
+            for (int k = 0; k * v[i] <= j; k++)
+                f[i][j] = max(f[i][j], f[i - 1][j - v[i] * k] + w[i] * k);
+
+    cout << f[n][m] << endl;
+
+    return 0;
+}
+```
+
+### 完全背包问题可以优化为二维
+
+多少个w代表选多少个第i个物品
+
+我们可以发现，上面一行每项对应比下面一项多w，上面这一坨的最大值比下面这一坨的最大值大了w
+
+一定相等，因为j-kv的条件是一样的
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+int v[N], w[N];
+int f[N][N];
+
+int main()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        cin >> v[i] >> w[i];
+
+    // 状态转移方程
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j <= m; j++)
+        {
+            f[i][j] = f[i - 1][j];
+            if (v[i] <= j)
+                f[i][j] = max(f[i][j], f[i][j - v[i]] + w[i]);
+        }
+
+    cout << f[n][m] << endl;
+
+    return 0;
+}
+```
+
+# 多重背包问题
+
+朴素做法
+
+### 直接实现朴素做法：
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 110;
+
+int n, m;
+int v[N], w[N], s[N];
+int f[N][N];
+
+int main()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        cin >> v[i] >> w[i] >> s[i];
+
+    // 状态转移方程
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j <= m; j++)
+            for (int k = 0; k <= s[i] && k * v[i] <= j; k++)
+                f[i][j] = max(f[i][j], f[i - 1][j - v[i] * k] + w[i] * k);
+
+    cout << f[n][m] << endl;
+
+    return 0;
+}
+```
+
+### 优化：二进制的优化方式
+
+在最大值中，我们无法由总共的最大值和最后一个数来求得前面n-1个数的最大值，所以不能完全用完全背包问题的优化方法来进行优化
+
+## AcWing5.多重背包问题 II
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 12010, M = 2010;
+
+int n, m;
+int v[N], w[N];
+int f[M];
+
+int main()
+{
+    cin >> n >> m;
+
+    int cnt = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        int a, b, s;
+        cin >> a >> b >> s;
+        int k = 1;
+        while (k <= s)
+        {
+            cnt++;
+            v[cnt] = a * k;
+            w[cnt] = b * k;
+            s -= k;
+            k *= 2;
+        }
+        if (s > 0)
+        {
+            cnt++;
+            v[cnt] = a * s;
+            w[cnt] = b * s;
+        }
+    }
+
+    n = cnt;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = m; j >= v[i]; j--)
+            f[j] = max(f[j], f[j - v[i]] + w[i]);
+
+    cout << f[m] << endl;
+
+    return 0;
+}
+```
+
+# 分组背包问题
+
+若转移时用的是上一层的状态，我们就从大到小来枚举体积，如果用的是本层的就要从小到大来枚举体积（从大到小枚举体积可以保证我们算这个体积的时候，所用的体积还没有被计算过）
+
+## AcWing9.分组**背包问题**
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 110;
+
+int n, m;
+int v[N][N], w[N][N], s[N];
+int f[N];
+
+int main()
+{
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; i ++ )
+    {
+        cin >> s[i];
+        for (int j = 0; j < s[i]; j ++ )
+            cin >> v[i][j] >> w[i][j];
+    }
+
+    for (int i = 1; i <= n; i ++ )
+        for (int j = m; j >= 0; j -- )
+            for (int k = 0; k < s[i]; k ++ )
+                if (v[i][k] <= j)
+                    f[j] = max(f[j], f[j - v[i][k]] + w[i][k]);
+
+    cout << f[m] << endl;
+
+    return 0;
+}
+```
+
+### 线性DP，区间DP，计数类DP
+
+# 线性DP
+
+### 线性DP：递推方程有明显的线性关系（无论几维），明显的线性顺序来求
+
+## AcWing898.数字三角形
+
+### 线性DP的白月光
+
+## **AcWing895.最长上升子序列**
+
+O(n^2)
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010;
+
+int n;
+int a[N], f[N];
+
+int main()
+{
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i ++) scanf("%d", &a[i]);
+    
+    for (int i = 1; i <= n; i ++)
+    {
+        f[i] = 1;
+        for (int j = 1; j < i; j ++)
+            if (a[j] < a[i])
+                f[i] = max(f[i], f[j] + 1);
+    }
+    
+    int res = 0;
+    for (int i = 1; i <=n; i++) res = max(res, f[i]);
+    
+    printf("%d\n",res);
+    
+    return 0;
+}
+```
+
+如何优化？
+
+## **AcWing896.最长上升子序列Ⅱ**
+
+O(n^2)会超时
+
+f(n)表示以a[n]为最后一个数的序列的长度，分类以倒数第二个数是哪个数进行分类，f(k)+1
+
+### 优化：一个长度我们只需要存结尾最小的
+
+猜测单调递增，试图证明，可以证明矛盾
+最大的小于a[i]的数
+
+划分出小于某个数的最大的数
+这种想法更像贪心，代码可以帮我们练习一下二分
+O(nlogn)
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 100010;
+
+int n;
+int a[N];
+int q[N]; // 所有不同长度的上升子序列的结尾的最小值
+
+int main()
+{
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+
+    int len = 0;
+    q[0] = -2e9;
+    for (int i = 0; i < n; i++)
+    {
+        int l = 0, r = len;
+        while (l < r)
+        {
+            int mid = l + r + 1 >> 1;
+            if (q[mid] < a[i])
+                l = mid;
+            else
+                r = mid - 1;
+        }
+        len = max(len, r + 1);
+        q[r + 1] = a[i];
+    }
+
+    printf("%d\n", len);
+
+    return 0;
+}
+```
+
+## **AcWing897.最长公共子序列**
+
+01和10两种情况不好理解，f[i-1, j]和f[i, j-1]并不能准确代表01和10两种情况，例如f[i-1, j]不一定以b[j]结尾，即不一定包含b[j]
+但我们可以知道，f[i-1, j]严格包含01情况，f[i, j]严格包含f[i-1, j]
+在求数量时，我们不能用f[i-1, j]代替01情况，但我们求的是最大值，我们却可以用其作为替代
+会有重叠，但重叠了也没有关系，因为求的是Max
+00情况一般不用写，因为其情况已被包含在后三种情况中
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 1010;
+
+int n, m;
+char a[N], b[N];
+int f[N][N];
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+    scanf("%s%s", a + 1, b + 1);
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+        {
+            f[i][j] = max(f[i - 1][j], f[i][j - 1]);
+            if (a[i] == b[j])
+                f[i][j] = max(f[i][j], f[i - 1][j - 1] + 1);
+        }
+
+    printf("%d\n", f[n][m]);
+
+    return 0;
+}
+```
+
+## **AcWing902.最短编辑距离**
+
+所有操作方式的操作次数的最小值
+
+## **AcWing899.编辑距离**
+
+和上一题基本相似
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+const int N = 15, M = 1010;
+
+int n, m;
+int f[N][N];
+char str[M][N];
+
+int edit_distance(char a[], char b[])
+{
+    int la = strlen(a + 1), lb = strlen(b + 1);
+
+    for (int i = 0; i <= lb; i++)
+        f[0][i] = i;
+    for (int i = 0; i <= la; i++)
+        f[i][0] = i;
+
+    for (int i = 1; i <= la; i++)
+        for (int j = 1; j <= lb; j++)
+        {
+            f[i][j] = min(f[i - 1][j] + 1, f[i][j - 1] + 1);
+            f[i][j] = min(f[i][j], f[i - 1][j - 1] + (a[i] != b[j]));
+        }
+
+    return f[la][lb];
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+    for (int i = 0; i < n; i++)
+        scanf("%s", str[i] + 1);
+
+    while (m--)
+    {
+        char s[N];
+        int limit;
+        scanf("%s%d", s + 1, &limit);
+
+        int res = 0;
+        for (int i = 0; i < n; i++)
+            if (edit_distance(str[i], s) <= limit)
+                res++;
+
+        printf("%d\n", res);
+    }
+
+    return 0;
+}
+```
+
+# 区间DP
+
+## AcWing282.石子合并
+
+以最后一次的分界线来分类
+
+区间长度从小到大来枚举
+
+```cpp
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+const int N = 310;
+
+int n;
+int s[N];
+int f[N][N];
+
+int main()
+{
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+        scanf("%d", &s[i]);
+
+    for (int i = 1; i <= n; i++)
+        s[i] += s[i - 1];
+
+    for (int len = 2; len <= n; len++)
+        for (int i = 1; i + len - 1 <= n; i++)
+        {
+            int l = i, r = i + len - 1;
+            f[l][r] = 1e8;
+            for (int k = l; k < r; k++)
+                f[l][r] = min(f[l][r], f[l][k] + f[k + 1][r] + s[r] - s[l - 1]);
+        }
+
+    printf("%d\n", f[1][n]);
+    return 0;
+}
+```
+
+# 计数类DP
+
+## AcWing900.整数划分
+
+不考虑顺序
+
+## 完全背包解法
+
+### 由于不考虑顺序，可以将整数n看作容量n的背包，一共n种物品，体积从1到n
+
+完全背包问题
+
+### 优化：
+
+可以推出状态转移方程：
+
+同完全背包问题，可以将空间优化，将第一维去掉，体积从小到大循环：
+
+## 其他解法（分拆数）
+
+### 最小值大于1的数需要不断拆解直到1
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010, mod = 1e9 + 7;
+
+int n;
+int f[N];
+
+int main()
+{
+    cin >> n;
+
+    f[0] = 1;
+    for (int i = 1; i <= n; i ++ )
+        for (int j = i; j <= n; j ++ )
+            f[j] = (f[j] + f[j - i]) % mod;
+
+    cout << f[n] << endl;
+
+    return 0;
+}
+```
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1010, mod = 1e9 + 7;
+
+int n;
+int f[N][N];
+
+int main()
+{
+    cin >> n;
+
+    f[1][1] = 1;
+    for (int i = 2; i <= n; i ++ )
+        for (int j = 1; j <= i; j ++ )
+            f[i][j] = (f[i - 1][j - 1] + f[i - j][j]) % mod;
+
+    int res = 0;
+    for (int i = 1; i <= n; i ++ ) res = (res + f[n][i]) % mod;
+
+    cout << res << endl;
+
+    return 0;
+}
+
+```
+
+### 数位统计DP，状态压缩DP，树形DP，记忆化搜索
+
+# 数位统计DP
+
+## AcWing338.计数问题
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int N = 10;
+
+/*
+
+001~abc-1, 999
+
+abc
+    1. num[i] < x, 0
+    2. num[i] == x, 0~efg
+    3. num[i] > x, 0~999
+
+*/
+
+int get(vector<int> num, int l, int r) // 因为我们举的分类中，有需要求出一串数字中某个区间的数字，例如abcdefg有一个分类需要求出efg+1
+{
+    int res = 0;
+    for (int i = l; i >= r; i--)
+        res = res * 10 + num[i]; // 这里从小到大枚举是因为下面count的时候读入数据是从最低位读到最高位，那么此时在num里，最高位存的就是数字的最低位，那么假如我们要求efg，那就是从2算到0
+    return res;
+}
+
+int power10(int i) // 这里有power10是因为有一个分类需要求得十次方的值，例如abc*10^3
+{
+    int res = 1;
+    while (i--)
+        res *= 10;
+    return res;
+}
+
+int count(int n, int x)
+{
+    vector<int> num; // num用来存储数中每一位的数字
+    while (n)
+    {
+        num.push_back(n % 10); // get里有解释
+        n /= 10;
+    }
+    n = num.size(); // 得出他的长度
+    int res = 0;
+    for (int i = n - 1 - !x; i >= 0; i--) // 这里需要注意，我们的长度需要减一，是因为num是从0开始存储，而长度是元素的个数，因此需要减1才能读到正确的数值，而！x出现的原因是因为我们不能让前导零出现，如果此时需要我们列举的是0出现的次数，那么我们自然不能让他出现在第一位，而是从第二位开始枚举
+    {
+        if (i < n - 1) // 其实这里可以不用if判断，因为for里面实际上就已经达成了if的判断，但为了方便理解还是加上if来理解，这里i要小于n-1的原因是因为我们不能越界只有7位数就最高从七位数开始读起
+        {
+            res += get(num, n - 1, i + 1) * power10(i); // 这里就是第一个分类，000~abc-1,那么此时情况个数就会是abc*10^3，这里的3取决于后面efg的长度，假如他是efgh，那么就是4
+            // 这里的n-1，i-1，自己将数组列出来然后根据分类标准就可以得出为什么l是n-1，r是i-1
+            if (!x)
+                res -= power10(i); // 假如此时我们要列举的是0出现的次数，因为不能出现前导零，这样是不合法也不符合我们的分类情况，例如abcdefg我们列举d，那么他就得从001~abc-1，这样就不会直接到efg，而是会到0efg，因为前面不是前导零，自然就可以列举这个时候0出现的次数，所以要减掉1个power10
+        }
+        // 剩下的这两个就直接根据分类标准来就好了
+        if (num[i] == x)
+            res += get(num, i - 1, 0) + 1;
+        else if (num[i] > x)
+            res += power10(i);
+    }
+    return res; // 返回res，即出现次数
+}
+
+int main()
+{
+    int a, b;
+    while (cin >> a >> b, a) // 读入数据，无论a，b谁是0，都是终止输入，因为不会有数字从零开始（a，b>0）
+    {
+        if (a > b)
+            swap(a, b);                                   // 因为我们需要从小到大，因此如果a大于b，那么就得交换，使得a小于b
+        for (int i = 0; i <= 9; i++)                      // 列举a和b之间的所有数字中 0∼9的出现次数
+            cout << count(b, i) - count(a - 1, i) << ' '; // 这里有点类似前缀和，要求a和b之间，那么就先求0到a i出现的次数，再求0到b i出现的次数，最后再相减就可以得出a和b之间i出现的次数
+        cout << endl;
+    }
+    return 0;
+}
+
+```
+
+# 状态压缩DP
+
+状态压缩题目的特点：n比较小，一般n小于等于20
+
+## AcWing291.**蒙德里安的梦想**
+
+状态压缩的经典应用
+
+### 朴素做法
+
+第i列状态为j，第i-1列状态为k
+j是一个二进制数，存储的是在放置横向长方形的情形下每一行种的每一列是否有延申出来的小方格占据一格
+1.判断是否冲突 ⇒ 位运算
+2.i-1列中所有相连的格子必须是偶数个
+
+```cpp
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 12, M = 1 << N;
+
+int n, m;
+long long f[N][M];
+bool st[M];
+
+int main()
+{
+    while (cin >> n >> m, n || m)
+    {
+        for (int i = 0; i < 1 << n; i ++ )
+        {
+            int cnt = 0;
+            st[i] = true;
+            for (int j = 0; j < n; j ++ )
+                if (i >> j & 1)
+                {
+                    if (cnt & 1) st[i] = false;
+                    cnt = 0; // 当前状态连续0的个数
+                }
+                else cnt ++ ;
+            if (cnt & 1) st[i] = false;
+        }
+
+        memset(f, 0, sizeof f);
+        f[0][0] = 1;
+        for (int i = 1; i <= m; i ++ )
+            for (int j = 0; j < 1 << n; j ++ )
+                for (int k = 0; k < 1 << n; k ++ )
+                    if ((j & k) == 0 && st[j | k])
+                        f[i][j] += f[i - 1][k];
+
+        cout << f[m][0] << endl;
+    }
+    return 0;
+}
+```
+
+## cWing91.最短Hamilton路径
+
+暴力的时间复杂度是O(n!*n)
+
+i将他看作一个二进制数，每一位代表其是否走过
+用倒数第二个点来分类  
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 20, M = 1 << N;
+
+int n;
+int w[N][N];
+int f[M][N];
+
+int main()
+{
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            cin >> w[i][j];
+
+    memset(f, 0x3f, sizeof f);
+    f[1][0] = 0;
+
+    for (int i = 0; i < 1 << n; i++)
+        for (int j = 0; j < n; j++)
+            if (i >> j & 1) // i包含j 看i的第j位是否为1
+                for (int k = 0; k < n; k++) // 枚举从哪个点转移过来
+                    if ((i - (1 << j)) >> k & 1) // i中除去j后是否包含k
+                    // if (i >> k & 1)
+                        f[i][j] = min(f[i][j], f [i - (1 << j)][k] + w[k][j]);
+
+    cout << f[(1 << n) - 1][n - 1];
+
+    return 0;
+}
+```
+
+# 树形DP
+
+## **AcWing285.没有上司的舞会**
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+const int N = 6010;
+
+int n;
+int h[N], e[N], ne[N], idx;
+int happy[N];
+int f[N][2];
+bool has_fa[N];
+
+void add(int a, int b)
+{
+    e[idx] = b, ne[idx] = h[a], h[a] = idx++;
+}
+
+void dfs(int u)
+{
+    f[u][1] = happy[u];
+
+    for (int i = h[u]; ~i; i = ne[i])
+    {
+        int j = e[i];
+        dfs(j);
+
+        f[u][1] += f[j][0];
+        f[u][0] += max(f[j][0], f[j][1]);
+    }
+}
+
+int main()
+{
+    scanf("%d", &n);
+
+    for (int i = 1; i <= n; i++)
+        scanf("%d", &happy[i]);
+
+    memset(h, -1, sizeof h);
+    for (int i = 0; i < n - 1; i++)
+    {
+        int a, b;
+        scanf("%d%d", &a, &b);
+        add(b, a);
+        has_fa[a] = true;
+    }
+
+    int root = 1;
+    while (has_fa[root])
+        root++;
+
+    dfs(root);
+
+    printf("%d\n", max(f[root][0], f[root][1]));
+
+    return 0;
+}
+```
+
+# **记忆化搜索**
+
+### 其实每一个动态规划问题都可以当作递归来写
+
+## **AcWing901.滑雪**
+
+这题的关键是介绍一种实现方式
+代码复杂度很低
+
+```cpp
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 310;
+
+int n, m;
+int g[N][N];
+int f[N][N];
+
+int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+
+int dp(int x, int y)
+{
+    int &st = f[x][y];
+    if (st != -1) return st;
+
+    st = 1;
+    for (int i = 0; i < 4; i ++ )
+    {
+        int a = x + dx[i], b = y + dy[i];
+        if (a >= 1 && a <= n && b >= 1 && b <= m && g[x][y] > g[a][b])
+            st = max(st, dp(a, b) + 1);
+    }
+
+    return st;
+}
+
+int main()
+{
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i ++ )
+        for (int j = 1; j <= m; j ++ )
+            scanf("%d", &g[i][j]);
+
+    memset(f, -1, sizeof f);
+
+    int res = 0;
+    for (int i = 1; i <= n; i ++ )
+        for (int j = 1; j <= m; j ++ )
+            res = max(res, dp(i, j));
+
+    printf("%d\n", res);
+
+    return 0;
+}
+```
+
+[访问我的Notion1](https://pickle-headline-168.notion.site/13e8ffd937e280a5a525c87866eaabc2?pvs=4)
+
+[访问我的Notion2](https://pickle-headline-168.notion.site/13f8ffd937e280968f7bc81159adc3f3?pvs=4)
+
+[访问我的Notion3](https://pickle-headline-168.notion.site/1408ffd937e28064bdbfe814b64c1947?pvs=4)
