@@ -8,7 +8,7 @@ export const headline = '你且听这风浪，永远二十赶朝暮'
 export const introduction = [
   "Coucou Les Amis! My name is SeaOcean.",
   'I\'m from Anhui and I\'m now a student of Southwest University.',
-  "I am now looking forward to my postgraduate life."
+  "I was in where I design the future."
 ]
 export const email = 'seaoceanovo@gmail.com'
 export const githubUsername = 'Sea0cean'

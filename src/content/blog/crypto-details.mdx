@@ -1,0 +1,225 @@
+---
+title: '一些密码和部分实现脚本'
+description: '12种不常见密码及部分实现脚本'
+date: '2023-07-03'
+categories: 'CTF'
+---
+
+### 0x01 埃特巴什码(Atbash Cipher)
+
+Atbash密码是一种替换密码，具有特定的密钥，其中字母表中的字母是颠倒的
+
+例如，所有的“A”被替换为“Z”，所有的“B”被替换为“Y”，以此类推
+
+它最初用于希伯来字母表，但可以用于任何字母表。就像我们在重力作用下看到的那样
+
+这种密码是由熊斐特博士发现的
+
+对应关系如下：
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+ZYXWVUTSRQPONMLKJIHGFEDCBA
+
+![image12](/images/blog/rsa/image12.png)
+
+python脚本实现
+```python
+key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+choise = input("0:加密，1:解密")
+key.split()if choise == 0:    
+plain = input("please input plaintext:>")    
+plain.split()    
+for i in range(len(plain)):        
+for x in range(26):            
+if plain[i] == key[x]:                
+plain[i] = key[25-x]    
+print(plain
+)else:    ciphertext = input("please input ciphertext:>")    ciphertext.split()    
+for i in range(len(ciphertext)):        
+for x in range(26):            
+if ciphertext[i] == key[x]:                
+ciphertext[i] = key[25-x]    
+print(ciphertext)
+```
+
+
+### 0x02 标准银河字母
+标准银河字母（Standard Galactic Alphabet）
+
+出自游戏《指挥官基恩》系列。是系列中使用的书写系统
+
+```
+∷  ∷リ  ∷|:
+```
+
+![image](/images/blog/rsa/image.png)
+
+### 0x03 当铺密码
+
+当铺密码就是一种将中文和数字进行转化的密码，算法相当简单:当前汉字有多少笔画出头，就是转化成数字几
+
+当铺密码就是一种将中文和数字进行转化的密码，一种加密算法，在CTF比赛题目中出现过。该加密算法是根据当前汉字有多少笔画出头，对应的明文就是数字几
+
+例如：
+
+密文：王夫 井工 夫口 由中人 井中 夫夫 由中大
+
+对应：67 84 70 123 82 77 125
+
+### 0x04 摩斯电码（用‘1’、‘0’表示）
+
+摩斯电码又称为摩尔斯电码
+
+是一种时通时断的信号代码，通过不同的排列顺序来表达不同的英文字母、数字和标点符号
+
+它发明于1837年，是一种早期的数字化通信形式。不同于现代化的数字通讯，摩尔斯电码只使用零和一两种状态的二进制代码，它的代码包括五种：短促的点信号“”，保持一定时间的长信号“—”，表示点和划之间的停顿、每个词之间中等的停顿，以及句子之间长的停顿
+
+python脚本实现
+```python
+string=input('please input plaintext:>')key=string.split(" ")dictionary= {'01': 'A',        '1000': 'B',        '1010': 'C',        '100':'D',        '0':'E',        '0010':'F',        '110': 'G',        '0000': 'H',        '00': 'I',        '0111':'J',        '101': 'K',        '0100': 'L',        '11': 'M',        '10': 'N',        '111': 'O',        '0110': 'P',        '1101': 'Q',        '010': 'R',        '000': 'S',        '1': 'T',        '001': 'U',        '0001': 'V',        '011': 'W',        '1001': 'X',        '1011': 'Y',        '1100': 'Z',        '01111': '1',        '00111': '2',        '00011': '3',        '00001': '4',        '00000': '5',        '10000': '6',        '11000': '7',        '11100': '8',        '11110': '9',        '11111': '0',        '001100': '?',        '10010': '/',        '101101': '()',        '100001': '-',        '010101': '.',        '110011':',',        '011010':'@',        '111000':':',        '101010':':',        '10001':'=',        '011110':"'",        '101011':'!',        '001101':'_',        '010010':'"',        '10110':'(',        '1111011':'{',        '1111101':'}'        }; for item in key:    print(dictionary[item],end='')
+```
+
+### 0x05 摩斯电码（用‘-’、‘.’表示）
+python脚本实现
+```
+string=input('please input plaintext:>')key=string.split(" ")dictionary= {'.-': 'A',        '-...': 'B',        '-.-.': 'C',        '-..':'D',        '.':'E',        '..-.':'F',        '--.': 'G',        '....': 'H',        '..': 'I',        '.---':'J',        '-.-': 'K',        '.-..': 'L',        '--': 'M',        '-.': 'N',        '---': 'O',        '.--.': 'P',        '--.-': 'Q',        '.-.': 'R',        '...': 'S',        '-': 'T',        '..-': 'U',        '...-': 'V',        '.--': 'W',        '-..-': 'X',        '-.--': 'Y',        '--..': 'Z',        '.----': '1',        '..---': '2',        '...--': '3',        '....-': '4',        '.....': '5',        '-....': '6',        '--...': '7',        '---..': '8',        '----.': '9',        '-----': '0',        '..--..': '?',        '-..-.': '/',        '-.--.-': '()',        '-....-': '-',        '.-.-.-': '.'        };for item in key:    print(dictionary[item],end='')
+```
+
+### 0x06 培根密码
+培根密码中的ab,代表的是数学二进制中的0和1.通过下列的密码表进行加密和解密：
+第一种方式：
+A aaaaa B aaaab C aaaba D aaabb
+E aabaa F aabab G aabba H aabbb
+I abaaa J abaab K ababa L ababb
+M abbaa N abbab O abbba P abbbb
+Q baaaa R baaab S baaba T baabb
+U babaa V babab W babba X babbbK
+Y bbaaa Z bbaab
+第二种方式
+a AAAAA g AABBA n ABBAA t BAABA
+b AAAAB h AABBB o ABBAB u-v BAABB
+c AAABA i-j ABAAA p ABBBA w BABAA
+d AAABB k ABAAB q ABBBB x BABAB
+e AABAA l ABABA r BAAAA y BABBA
+f AABAB m ABABB s BAAAB z BABBB
+
+在线加解密工具：https://tool.bugku.com/peigen/
+
+第一种python脚本实现
+```python
+string=input('please input plaintext:>')string.split()dictionary= {'A': 'aaaaa',            'B': 'aaaab',            'C': 'aaaba',            'D': 'aaabb',            'E': 'aabaa',            'F': 'aabab',            'G': 'aabba',            'H': 'aabbb',            'I': 'abaaa',            'J': 'abaab',            'K': 'ababa',            'L': 'ababb',            'M': 'abbaa',            'N': 'abbab',            'O': 'abbba',            'P': 'abbbb',            'Q': 'baaaa',            'R': 'baaab',            'S': 'baaba',            'T': 'baabb',            'U': 'babaa',            'V': 'babab',            'W': 'babba',            'X': 'babbb',            'Y': 'bbaaa',            'Z': 'bbaab'            };for item in string:    print(dictionary[item],end=' ')
+```
+
+第二种python脚本实现
+```python
+string=input('please input plaintext:>')string.split()dictionary= {'a': 'AAAAA',            'g': 'AABBA',            'n': 'ABBAA',            't': 'BAABA',            'b': 'AAAAB',            'h': 'AABBB',            'o': 'ABBAB',            'u': 'BAABB',            'v': 'BAABB',            'c': 'AAABA',            'i': 'ABAAA',            'j': 'ABAAA',            'p': 'ABBBA',            'w': 'BABAA',            'd': 'AAABB',            'k': 'ABAAB',            'q': 'ABBBB',            'x': 'BABAB',            'e': 'AABAA',            'l': 'ABABA',            'r': 'BAAAA',            'y': 'BABBA',            'f': 'AABAB',            'm': 'ABABB',            's': 'BAAAB',            'z': 'BABBB'            };for item in string:    print(dictionary[item],end=' ')
+```
+
+### 0x07 敲击码
+
+敲击码是基于5×5方格波利比奥斯方阵来实现的，不同点是是用K字母被整合到C中
+
+因此密文的特征为1-5的两位一组的数字，编码的范围是A-Z字母字符集，字母不区分大小写
+
+![image1](/images/blog/rsa/image1.png)
+
+例如：
+
+![image2](/images/blog/rsa/image2.png)
+
+### 0x08 圣堂武士密码(Templar Cipher)
+
+圣堂武士的密码是基于他们的旗帜上有一个红十字
+
+它由四个箭头形状组成，圣堂武士用三角形和圆点组合了25个符号，指向十字箭头的四个方向
+
+字母表中除了J之外的每个字母都用一种容易记住的模式替换了其中一个符号
+
+在中世纪，旅行者害怕强盗。怎样才能把钱从一个地方带到另一个地方而不丢失它呢?
+
+为了提供帮助，一群名为圣殿骑士团(Knights Templar)的富有武僧加入了他们的城堡网络，并发明了国际银行业
+
+城堡和密码
+
+把钱交给离你最近的城堡里的骑士，他们给了你一张纸条，上面写着你给了他们多少钱
+
+你可以把这张纸条带到一个遥远的城堡，在那里当地的骑士会把它换回来
+
+但这并没有完全解决问题，强盗可以伪造钞票，圣殿骑士团通过使用密码解决了这个问题：加密信息的秘密算法，只有拥有密码的人才能破译
+
+只有圣殿骑士知道他们密码的秘密，这就是国际银行业的开端，直到今天，国际银行业仍需要密码才能运作
+
+![image3](/images/blog/rsa/image3.png)
+
+### 0x09 夏多密码(曲折加密)
+
+一种简单的替代密码
+
+是未经正式批准或安全验证而引入应用程序的任何代码,它相当于影子It的应用程序开发。它为应用程序引入了未知的风险，使业务难以确保数据安全和隐私，以及遵守规则
+
+![image4](/images/blog/rsa/image4.png)
+
+
+### 0x10 中文电码
+
+中文电码，又称标准中文电码、中文商用电码、中文电报码或中文电报明码原本是于电报之中传送中文信息的方法
+
+它是第一个把汉字化作电子讯号的编码表
+
+![image5](/images/blog/rsa/image5.png)
+
+![image6](/images/blog/rsa/image6.png)
+
+
+### 0x11 猪圈密码
+
+猪圈密码（亦称朱高密码、共济会暗号、共济会密码或共济会员密码）
+
+是一种以格子为基础的简单替代式密码，即使使用符号，也不会影响密码分析，亦可用在其它替代式的方法
+猪圈密码几乎没有任何安全性，它使用符号而不是字母，且这种密码与其他任何简单的单字母替换密码在其他方面没有什么不同
+
+由于它非常有名，而且易于识别，安全性极差
+
+由于Pigpen的简单性，它经常出现在关于密码和秘密书写的儿童书籍中
+
+![image7](/images/blog/rsa/image7.png)
+
+例如：
+
+![image8](/images/blog/rsa/image8.png)
+
+### 0x12 四方密码
+
+四方密码是一种对称式加密法，由法国人Felix Delastelle（1840年–1902年）发明
+
+这种方法将字母两个一组，然后采用多字母替换密码
+
+![image9](/images/blog/rsa/image9.png)
+
+例如
+
+两个字母一组地分开讯息：（例如hello world变成he ll ow or ld）；
+
+第一个字母在左上角矩阵的位置
+
+第二个字母在右下角矩阵的位置
+
+找右上角矩阵中，和第一个字母同行，第二个字母同列的字母
+
+找左下角矩阵中，和第一个字母同列，第二个字母同行的字母
+
+得到的这两个字母就是加密过的讯息
+
+he lp me ob iw an ke no bi
+
+的加密结果：
+
+FY NF NE HW BX AF FO KH MD
+
+![image10](/images/blog/rsa/image10.png)
+
+![image11](/images/blog/rsa/image11.png)
+
+he --> FY
+
